@@ -1,5 +1,3 @@
-// This file contains the JavaScript code for the web page. It handles the logic for fetching data from sample.json, categorizing it by brand, model, and year, and dynamically updating the HTML content.
-
 document.addEventListener('DOMContentLoaded', function () {
     fetch('data/sample.json')
         .then(response => {
@@ -9,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
+            const brandSelect = document.getElementById('brand-select');
+            const modelSelect = document.getElementById('model-select');
+            const yearSelect = document.getElementById('year-select');
             const catalog = document.getElementById('catalog');
             const groupedData = {};
 
@@ -24,69 +25,71 @@ document.addEventListener('DOMContentLoaded', function () {
                 groupedData[brand][model][year].push(imageUrl);
             });
 
-            // Function to render the catalog
-            function renderCatalog(filterType = null, filterValue = null) {
-                catalog.innerHTML = ''; // Clear the catalog
+            // Populate the brand dropdown
+            Object.keys(groupedData).forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.textContent = brand;
+                brandSelect.appendChild(option);
+            });
 
-                Object.keys(groupedData).forEach(brand => {
-                    if (filterType === 'brand' && filterValue !== brand) return;
+            // Handle brand selection
+            brandSelect.addEventListener('change', () => {
+                const selectedBrand = brandSelect.value;
+                modelSelect.innerHTML = '<option value="">Select Model</option>';
+                yearSelect.innerHTML = '<option value="">Select Year</option>';
+                yearSelect.disabled = true;
+                catalog.innerHTML = '';
 
-                    const brandDiv = document.createElement('div');
-                    brandDiv.classList.add('brand');
-                    brandDiv.innerHTML = `<h2>${brand}</h2>`;
-
-                    Object.keys(groupedData[brand]).forEach(model => {
-                        if (filterType === 'model' && filterValue !== model) return;
-
-                        const modelDiv = document.createElement('div');
-                        modelDiv.classList.add('model');
-                        modelDiv.innerHTML = `<h3>${model}</h3>`;
-
-                        Object.keys(groupedData[brand][model]).forEach(year => {
-                            if (filterType === 'year' && filterValue !== year) return;
-
-                            const yearDiv = document.createElement('div');
-                            yearDiv.classList.add('year');
-                            yearDiv.innerHTML = `<h4>${year}</h4>`;
-
-                            const imagesDiv = document.createElement('div');
-                            imagesDiv.classList.add('images');
-
-                            groupedData[brand][model][year].forEach(imageUrl => {
-                                const img = document.createElement('img');
-                                img.src = imageUrl;
-                                img.alt = `${brand} ${model} ${year}`;
-                                imagesDiv.appendChild(img);
-                            });
-
-                            yearDiv.appendChild(imagesDiv);
-                            modelDiv.appendChild(yearDiv);
-                        });
-
-                        brandDiv.appendChild(modelDiv);
+                if (selectedBrand) {
+                    modelSelect.disabled = false;
+                    Object.keys(groupedData[selectedBrand]).forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        modelSelect.appendChild(option);
                     });
-
-                    catalog.appendChild(brandDiv);
-                });
-            }
-
-            // Initial render
-            renderCatalog();
-
-            // Add event listeners for filters
-            document.getElementById('filter-brand').addEventListener('click', () => {
-                const brand = prompt('Enter a brand to filter:');
-                if (brand) renderCatalog('brand', brand);
+                } else {
+                    modelSelect.disabled = true;
+                }
             });
 
-            document.getElementById('filter-model').addEventListener('click', () => {
-                const model = prompt('Enter a model to filter:');
-                if (model) renderCatalog('model', model);
+            // Handle model selection
+            modelSelect.addEventListener('change', () => {
+                const selectedBrand = brandSelect.value;
+                const selectedModel = modelSelect.value;
+                yearSelect.innerHTML = '<option value="">Select Year</option>';
+                catalog.innerHTML = '';
+
+                if (selectedModel) {
+                    yearSelect.disabled = false;
+                    Object.keys(groupedData[selectedBrand][selectedModel]).forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        yearSelect.appendChild(option);
+                    });
+                } else {
+                    yearSelect.disabled = true;
+                }
             });
 
-            document.getElementById('filter-year').addEventListener('click', () => {
-                const year = prompt('Enter a year to filter:');
-                if (year) renderCatalog('year', year);
+            // Handle year selection
+            yearSelect.addEventListener('change', () => {
+                const selectedBrand = brandSelect.value;
+                const selectedModel = modelSelect.value;
+                const selectedYear = yearSelect.value;
+                catalog.innerHTML = '';
+
+                if (selectedYear) {
+                    const images = groupedData[selectedBrand][selectedModel][selectedYear];
+                    images.forEach(imageUrl => {
+                        const img = document.createElement('img');
+                        img.src = imageUrl;
+                        img.alt = `${selectedBrand} ${selectedModel} ${selectedYear}`;
+                        catalog.appendChild(img);
+                    });
+                }
             });
         })
         .catch(error => {
