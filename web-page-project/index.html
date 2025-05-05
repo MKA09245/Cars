@@ -12,9 +12,15 @@
     </header>
     <main>
         <div id="filters">
-            <button id="filter-brand">Filter by Brand</button>
-            <button id="filter-model">Filter by Model</button>
-            <button id="filter-year">Filter by Year</button>
+            <select id="brand-select">
+                <option value="">Select Brand</option>
+            </select>
+            <select id="model-select" disabled>
+                <option value="">Select Model</option>
+            </select>
+            <select id="year-select" disabled>
+                <option value="">Select Year</option>
+            </select>
         </div>
         <div id="catalog"></div>
     </main>
