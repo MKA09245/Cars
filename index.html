@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Catalog</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Vehicle Catalog</h1>
+    </header>
+    <main>
+        <section id="filters">
+            <div class="filter-group">
+                <label for="brand-select">Brand:</label>
+                <select id="brand-select">
+                    <option value="">Select Brand</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="model-select">Model:</label>
+                <select id="model-select" disabled>
+                    <option value="">Select Model</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="year-select">Year:</label>
+                <select id="year-select" disabled>
+                    <option value="">Select Year</option>
+                </select>
+            </div>
+        </section>
+        <section id="catalog" class="catalog"></section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Vehicle Catalog</p>
+    </footer>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
